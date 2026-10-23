@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/img/banner.svg" alt="AlgoMaschine Kit: a fox with a drafting compass in a hexagon, with the text Backtesting that tells the truth" width="100%"></p>
+<p align="center"><img src="docs/img/banner.svg" alt="AlgoMaschine Kit: a fox whose head is the hinge of a drafting compass, in a hexagon, with the text Backtesting that tells the truth" width="100%"></p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-d946ef?style=flat-square"></a>

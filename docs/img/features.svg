@@ -4,6 +4,7 @@
 .f{fill:#f4f5f6;stroke:none} .g{fill:#d2b469;stroke:none} .gl{fill:none;stroke:#d2b469;stroke-linejoin:round;stroke-linecap:round}
 .eye{fill:#2a1038;stroke:#f4f5f6;stroke-width:6}
 .b{fill:#c98a8a;stroke:none;opacity:.55}
+.t{fill:none;stroke:#f4f5f6;stroke-linejoin:round;stroke-linecap:round;opacity:.55} .r{fill:#d98a94;stroke:none;opacity:.6}
 </style><rect width="1280" height="530" fill="#0d0614" rx="18"/>
 <text x="40" y="62" fill="#f4f5f6" font-family="Georgia,'Times New Roman',serif" font-size="34" font-weight="600">What is inside</text>
 <text x="40" y="90" fill="#a9a0b5" font-family="'Helvetica Neue',Arial,sans-serif" font-size="16">Everything a research project needs, in one repository.</text>
