@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="96 36 808 928" role="img" aria-label="AlgoMaschine fox with a drafting compass">
   <style>
-    :root{--ink:#101214;--gold:#c79a2a;--blush:#d9a0a0;--fux:#a22bb5;--eye:#101214}
-    @media (prefers-color-scheme:dark){:root{--ink:#f4f5f6;--gold:#e0b84a;--blush:#c98a8a;--fux:#e56ff7;--eye:#1c0f26}}
+    :root{--ink:#101214;--gold:#a8893f;--blush:#d9a0a0;--fux:#86692a;--eye:#101214}
+    @media (prefers-color-scheme:dark){:root{--ink:#f4f5f6;--gold:#c2a25a;--blush:#c98a8a;--fux:#e3c777;--eye:#15171a}}
     .l{fill:none;stroke:var(--ink);stroke-linejoin:round;stroke-linecap:round}
     .f{fill:var(--ink);stroke:none}
     .g{fill:var(--gold);stroke:none}

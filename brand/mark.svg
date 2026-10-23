@@ -26,7 +26,7 @@
     </filter>
   </defs>
 <!-- LAYER 1: The Neon Glow (Thick, colored, blurred) -->
-  <g filter="url(#neon-glow)" stroke="#d946ef" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g filter="url(#neon-glow)" stroke="#d2b469" fill="none" stroke-linecap="round" stroke-linejoin="round">
     
     <!-- Outer Hexagon -->
     <polygon points="300,50 430,125 430,275 300,350 170,275 170,125" stroke-width="4" />
@@ -46,7 +46,7 @@
     <!-- The Compass (Drafting Tool) -->
     <!-- Top Hinge -->
     <circle cx="300" cy="120" r="15" stroke-width="3" />
-    <circle cx="300" cy="120" r="5" fill="#d946ef" stroke="none" />
+    <circle cx="300" cy="120" r="5" fill="#d2b469" stroke="none" />
     
     <!-- Compass Legs (Thick main lines) -->
     <path d="M 300,135 L 235,310" stroke-width="5" />

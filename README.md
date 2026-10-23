@@ -1,10 +1,10 @@
 <p align="center"><img src="docs/img/banner.svg" alt="AlgoMaschine Kit: a cute winking fox holding a golden drafting compass, in a hexagon with a dotted circle, with the text Backtesting that tells the truth" width="100%"></p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-d946ef?style=flat-square"></a>
-  <img alt="Python 3.11" src="https://img.shields.io/badge/python-3.11-d2b469?style=flat-square">
-  <img alt="Rust accelerator optional" src="https://img.shields.io/badge/rust-optional-0d0614?style=flat-square">
-  <img alt="Claude Code skills" src="https://img.shields.io/badge/Claude%20Code-skills-d946ef?style=flat-square">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-a8893f?style=flat-square"></a>
+  <img alt="Python 3.11" src="https://img.shields.io/badge/python-3.11-14161a?style=flat-square">
+  <img alt="Rust accelerator optional" src="https://img.shields.io/badge/rust-optional-14161a?style=flat-square">
+  <img alt="Claude Code skills" src="https://img.shields.io/badge/Claude%20Code-skills-a8893f?style=flat-square">
 </p>
 
 # AlgoMaschine Kit: walk-forward backtesting framework for quantitative trading

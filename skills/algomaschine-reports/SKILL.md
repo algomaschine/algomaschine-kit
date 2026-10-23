@@ -7,17 +7,17 @@ description: Build AlgoMaschine-branded infographics, live dashboards and white 
 
 ## Brand and house style
 - **The logotype is never redrawn or simplified.** Use `brand/mark.svg` (the neon mark with its glow) and the white
-  Montserrat Light wordmark (letter-spacing ~0.09em, its soft glow) exactly as designed, on the logo's own violet-black
-  `#0d0614`: the top bar and the footer band are always that colour, in both themes. The mark is the favicon.
+  Montserrat Light wordmark (letter-spacing ~0.09em, its soft glow) exactly as designed, on the near-black plate
+  `#14161a` (the AlgoMaschine Intelligence palette: black, white, gold): the top bar and the footer band are always that colour, in both themes. The mark is the favicon.
 - Everything else is calm and established, never "neon": flat surfaces, hairline borders, 6 px radii, no glows,
   gradients or text-shadows outside the lockup. Inter for the interface (tabular figures), Source Serif 4 for long-form
   text, JetBrains Mono for code. Light and dark themes follow the OS preference, with a toggle.
 - Typographic minus (−) for negative numbers; sentence-case headings; no emoji; status always icon + label.
 
-## Palette (validated with the dataviz validator, --pairs all; re-run it before changing anything)
-- Systems, fixed order: light `#00928a`, `#a8690a`, `#a22bb5` on `#ffffff`; dark `#1fa39c`, `#bd7f17`, `#c65ad6` on `#161920`.
+## Palette (teal and amber validated earlier with the dataviz validator; the blue third colour and the gold ramp are new, so re-run the validator before relying on them)
+- Systems, fixed order: light `#00928a`, `#a8690a`, `#3b5ba5` on `#ffffff`; dark `#1fa39c`, `#bd7f17`, `#7f9fe0` on `#15171a`.
   Benchmark = neutral reference line (`#5b6170` light / `#9aa1ad` dark), thinner and always labelled.
-- Diverging (gain/loss): teal pole, red pole, neutral midpoint. Sequential: one plum ramp. Status colours are reserved.
+- Diverging (gain/loss): teal pole, red pole, neutral midpoint. Sequential: one gold ramp. Status colours are reserved.
 - More than 3 series -> small multiples or an HTML legend with toggles, never new hues.
 
 ## Required panels for a trading-system result

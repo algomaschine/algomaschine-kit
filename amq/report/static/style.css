@@ -1,6 +1,6 @@
 /* AlgoMaschine research site: a calm, report-like style. Flat surfaces, hairline rules, one restrained accent
-   (the logo's magenta), no glows. Chart palettes validated with the dataviz validator (--pairs all):
-   light #00928a / #a8690a / #a22bb5 on #ffffff and dark #1fa39c / #bd7f17 / #c65ad6 on #161920: all checks pass.
+   (the AlgoMaschine Intelligence gold), no glows. Chart series: teal / amber are the earlier validated pair; the third (blue)
+   is new and has not been run through the dataviz validator yet: re-run it before relying on it.
    The benchmark is a neutral reference line (thinner, always labelled), not a categorical slot. */
 :root {
   --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -12,23 +12,23 @@
 }
 :root, :root[data-theme="light"] {
   color-scheme: light;
-  --page: #f6f6f3; --surface: #ffffff; --raised: #ffffff; --sunken: #f2f2ef; --ring: #e3e3de; --ring-2: #cfcfc9;
-  --ink: #15171c; --ink-2: #434852; --muted: #6a6f78; --grid: #ecece8; --axis: #c8cac5;
-  --brand: #a22bb5; --brand-ink: #8a1f9b; --brand-soft: rgba(162, 43, 181, 0.06);
-  --s1: #00928a; --s2: #a8690a; --s3: #a22bb5; --bench: #5b6170; --volume: #dedfd9;
+  --page: #f3f4f5; --surface: #ffffff; --raised: #ffffff; --sunken: #eceef0; --ring: #d6d9de; --ring-2: #c3c7cd;
+  --ink: #101214; --ink-2: #32363c; --muted: #60666f; --grid: #e6e8eb; --axis: #c3c7cd;
+  --brand: #a8893f; --brand-ink: #86692a; --brand-soft: rgba(168, 137, 63, 0.08);
+  --s1: #00928a; --s2: #a8690a; --s3: #3b5ba5; --bench: #5b6170; --volume: #dcdfe3;
   --div-pos: #00928a; --div-neg: #c8423f; --div-mid: #efefeb;
-  --seq-1: #ecd3f1; --seq-2: #d9a8e4; --seq-3: #c27ad3; --seq-4: #a22bb5; --seq-5: #7c2089; --seq-6: #561660;
+  --seq-1: #f3ead3; --seq-2: #e4d2a1; --seq-3: #cfb66d; --seq-4: #a8893f; --seq-5: #7d6425; --seq-6: #54421a;
   --good: #1a7f37; --good-bg: #e7f4ea; --warn: #8a5a00; --warn-bg: #fdf3d7; --bad: #b42318; --bad-bg: #fdeceb;
   --info: #4a5160; --info-bg: #eef0f3; --shadow: 0 1px 2px rgba(20, 22, 28, 0.04);
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: #0f1115; --surface: #161920; --raised: #1c2029; --sunken: #12151a; --ring: #262a33; --ring-2: #353a46;
-  --ink: #e8eaee; --ink-2: #b4b9c3; --muted: #8a909b; --grid: #22262e; --axis: #3a3f4a;
-  --brand: #d17ae0; --brand-ink: #dc97e8; --brand-soft: rgba(209, 122, 224, 0.08);
-  --s1: #1fa39c; --s2: #bd7f17; --s3: #c65ad6; --bench: #9aa1ad; --volume: #2a2f38;
+  --page: #0d0e10; --surface: #15171a; --raised: #1b1e22; --sunken: #101215; --ring: #2a2e34; --ring-2: #3a3f46;
+  --ink: #f4f5f6; --ink-2: #c7cbd1; --muted: #969ca5; --grid: #1f2328; --axis: #3a3f46;
+  --brand: #c2a25a; --brand-ink: #d3b46c; --brand-soft: rgba(194, 162, 90, 0.10);
+  --s1: #1fa39c; --s2: #bd7f17; --s3: #7f9fe0; --bench: #9aa1ad; --volume: #2a2f38;
   --div-pos: #1fa39c; --div-neg: #e0605c; --div-mid: #272b34;
-  --seq-1: #4a2552; --seq-2: #6d3479; --seq-3: #9447a4; --seq-4: #c65ad6; --seq-5: #da8fe5; --seq-6: #ecc3f2;
+  --seq-1: #3a2f14; --seq-2: #5e4c20; --seq-3: #8a7030; --seq-4: #c2a25a; --seq-5: #dcc07c; --seq-6: #ecdcb0;
   --good: #57c878; --good-bg: rgba(87, 200, 120, 0.11); --warn: #e3b341; --warn-bg: rgba(227, 179, 65, 0.11);
   --bad: #f47067; --bad-bg: rgba(244, 112, 103, 0.11); --info: #a3a9b4; --info-bg: rgba(163, 169, 180, 0.11);
   --shadow: none;
@@ -41,8 +41,8 @@ a { color: var(--brand-ink); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 2px; }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 3px; }
 
-/* ------------------------------------------------------------------ top bar: the logotype as designed, always on its own violet-black */
-.topbar { position: sticky; top: 0; z-index: 20; background: #0d0614; border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: #f7f4fa; }
+/* ------------------------------------------------------------------ top bar: the logotype as designed, always on its own near-black plate */
+.topbar { position: sticky; top: 0; z-index: 20; background: #14161a; border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: #f4f5f6; }
 .topbar-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 28px; padding: 0 var(--gutter); min-height: 64px; }
 .brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; flex: none; padding: 8px 0; }
 .brand:hover { text-decoration: none; }
@@ -55,7 +55,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .tabs a { display: flex; align-items: center; color: #b8aec6; font-weight: 500; font-size: 14px; white-space: nowrap;
   border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 2px 0 0; }
 .tabs a:hover { color: #ffffff; text-decoration: none; }
-.tabs a[aria-current="page"] { color: #ffffff; border-bottom-color: #d946ef; }
+.tabs a[aria-current="page"] { color: #ffffff; border-bottom-color: #d2b469; }
 .top-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex: none; }
 .status-line { font-size: 12.5px; color: #b8aec6; display: flex; gap: 12px; align-items: center; white-space: nowrap; }
 .status-line .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8f84a0; margin-right: 6px; vertical-align: 1px; }
@@ -182,7 +182,7 @@ table.checks td:first-child { width: 1%; padding-right: 16px; }
 
 .note { border: 1px solid var(--ring-2); background: var(--sunken); padding: 10px 14px; border-radius: var(--radius); margin: 10px 0; color: var(--ink-2); }
 pre { white-space: pre-wrap; color: var(--ink-2); font: 12px/1.5 var(--font-mono); }
-footer.site { background: #0d0614; color: #b8aec6; font-size: 12.5px; margin-top: 40px; }
+footer.site { background: #14161a; color: #a9aeb6; font-size: 12.5px; margin-top: 40px; }
 footer.site .inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 22px var(--gutter) 30px; }
 footer.site img { width: 22px; height: 24px; display: block; }
 
