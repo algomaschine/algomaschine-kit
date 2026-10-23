@@ -1,4 +1,11 @@
-<p align="center"><img src="brand/fox-emblem.svg" width="220" alt="AlgoMaschine fox with a drafting compass"></p>
+<p align="center"><img src="docs/img/banner.svg" alt="AlgoMaschine Kit: a fox with a drafting compass in a hexagon, with the text Backtesting that tells the truth" width="100%"></p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-d946ef?style=flat-square"></a>
+  <img alt="Python 3.11" src="https://img.shields.io/badge/python-3.11-d2b469?style=flat-square">
+  <img alt="Rust accelerator optional" src="https://img.shields.io/badge/rust-optional-0d0614?style=flat-square">
+  <img alt="Claude Code skills" src="https://img.shields.io/badge/Claude%20Code-skills-d946ef?style=flat-square">
+</p>
 
 # AlgoMaschine Kit: walk-forward backtesting framework for quantitative trading
 
@@ -11,6 +18,9 @@ look-ahead and fragility. It follows the methods of López de Prado's *Advances 
 
 Good for: strategy research, overfitting checks, alpha research on FX, equities, ETFs, commodities and crypto, and anyone who
 wants an honest answer to "is this backtest real?".
+
+## How it works
+<p align="center"><img src="docs/img/pipeline.svg" alt="Pipeline in seven steps: idea, data and QA, spec lock, review gate, walk-forward, report, audit" width="100%"></p>
 
 ## Quick start
 ```bash
@@ -27,6 +37,8 @@ make help             # everything else (status, logs, rust, backup, spec-bump)
 ```
 
 ## What is inside
+<p align="center"><img src="docs/img/features.svg" alt="Eight building blocks: data, validation, engine, review gate, forensic audit, dashboard, Rust accelerator, Claude Code skills" width="100%"></p>
+
 | Path | What |
 |---|---|
 | `amq/data` | EODHD daily + chunked resumable intraday (1m -> 5m), `known_before`, the clock QA gate |

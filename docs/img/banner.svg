@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="AlgoMaschine Kit: walk-forward backtesting for quantitative trading">
+<style>
+.l{fill:none;stroke:#f4f5f6;stroke-linejoin:round;stroke-linecap:round}
+.f{fill:#f4f5f6;stroke:none} .g{fill:#d2b469;stroke:none} .gl{fill:none;stroke:#d2b469;stroke-linejoin:round;stroke-linecap:round}
+.eye{fill:#2a1038;stroke:#f4f5f6;stroke-width:6}
+.b{fill:#c98a8a;stroke:none;opacity:.55}
+</style><defs><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#d946ef" stop-opacity=".35"/><stop offset="1" stop-color="#d946ef" stop-opacity="0"/></radialGradient></defs>
+<rect width="1280" height="400" fill="#0d0614"/>
+<circle cx="260" cy="200" r="230" fill="url(#halo)"/>
+<path d="M0 372 H1280" stroke="#3a1f4d" stroke-width="1"/>
+<g stroke="#d946ef" stroke-opacity=".18" fill="none"><path d="M470 60 H1220 M470 340 H1220"/></g>
+<svg x="110" y="22" width="300" height="356" viewBox="96 36 808 928">
+  
+  <!-- frame: the hexagon of the AlgoMaschine emblem -->
+  <g class="l" stroke-width="17"><polygon points="500,50 890,275 890,725 500,950 110,725 110,275"/></g>
+  <g class="l" stroke-width="9"><polygon points="500,80 860,290 860,710 500,920 140,710 140,290"/></g>
+
+  <!-- tail: fluffy, curling up on the left, gold tip -->
+  <path class="l" stroke-width="12" d="M415,790 C290,815 205,740 235,620 C248,575 292,570 302,606 C296,665 335,715 410,730"/>
+  <path class="g" d="M235,620 C240,585 272,566 302,606 C282,606 258,612 235,620 Z"/>
+  <path class="l" stroke-width="6" d="M262,690 C280,712 310,722 340,724" opacity=".6"/>
+
+  <!-- body, sitting -->
+  <path class="l" stroke-width="12" d="M418,610 C372,690 375,770 425,800 L575,800 C625,770 628,690 582,610"/>
+  <path class="l" stroke-width="6" d="M470,640 L500,715 L530,640" opacity=".7"/>
+  <!-- left paw down -->
+  <path class="l" stroke-width="10" d="M455,720 L452,795"/>
+  <ellipse class="l" stroke-width="10" cx="452" cy="800" rx="34" ry="14"/>
+  <!-- right foot -->
+  <ellipse class="l" stroke-width="10" cx="560" cy="800" rx="34" ry="14"/>
+
+  <!-- compass the fox holds: ring, legs, crossbar, pencil tip -->
+  <circle class="l" stroke-width="10" cx="722" cy="470" r="26"/>
+  <circle class="g" cx="722" cy="470" r="9"/>
+  <path class="l" stroke-width="13" d="M722,496 L664,800"/>
+  <path class="l" stroke-width="13" d="M722,496 L788,800"/>
+  <path class="l" stroke-width="7" d="M683,690 L765,690"/>
+  <path class="gl" stroke-width="5" d="M693,640 L755,640"/>
+  <path class="f" d="M664,800 L652,832 L678,812 Z"/>
+  <path class="g" d="M788,800 L800,832 L774,812 Z"/>
+  <!-- arm reaching to the ring -->
+  <path class="l" stroke-width="11" d="M588,655 C628,640 662,590 700,500"/>
+  <circle class="l" stroke-width="10" cx="706" cy="494" r="19"/>
+
+  <!-- ears -->
+  <path class="l" stroke-width="12" d="M352,398 C340,330 335,290 330,248 C385,272 430,305 462,345"/>
+  <path class="l" stroke-width="12" d="M648,398 C660,330 665,290 670,248 C615,272 570,305 538,345"/>
+  <path class="g" d="M356,372 C350,330 346,300 346,282 C380,298 408,318 428,342 C400,350 376,360 356,372 Z"/>
+  <path class="g" d="M644,372 C650,330 654,300 654,282 C620,298 592,318 572,342 C600,350 624,360 644,372 Z"/>
+
+  <!-- head: round, with cheek tufts -->
+  <path class="l" stroke-width="12" d="M330,495 C322,400 402,340 500,340 C598,340 678,400 670,495 L700,520 L668,534 L688,562 C650,610 580,626 500,626 C420,626 350,610 312,562 L332,534 L300,520 Z"/>
+
+  <!-- eyes: left wide open and sparkling, right winking; lashes -->
+  <ellipse class="eye" cx="428" cy="485" rx="34" ry="44"/>
+  <circle fill="#fff" cx="440" cy="466" r="12"/><circle fill="#fff" cx="418" cy="506" r="6"/>
+  <path class="l" stroke-width="9" d="M395,452 L376,436 M394,472 L372,468"/>
+  <path class="l" stroke-width="11" d="M538,492 Q572,452 606,492"/>
+  <path class="l" stroke-width="9" d="M612,478 L630,462"/>
+  <!-- nose and mouth -->
+  <path class="f" d="M488,534 Q500,526 512,534 Q508,546 500,550 Q492,546 488,534 Z"/>
+  <path class="l" stroke-width="8" d="M500,552 L500,562 M500,562 Q486,578 470,566 M500,562 Q514,578 530,566"/>
+  <!-- blush -->
+  <ellipse class="b" cx="386" cy="552" rx="30" ry="15"/>
+  <ellipse class="b" cx="614" cy="552" rx="30" ry="15"/>
+
+  <!-- the line the compass draws: dots under the fox -->
+  <path class="l" stroke-width="20" stroke-dasharray="0 48" d="M380,834 L620,834"/>
+</svg>
+<text x="470" y="150" fill="#f4f5f6" font-family="Georgia,'Times New Roman',serif" font-size="76" font-weight="600">AlgoMaschine Kit</text>
+<text x="472" y="198" fill="#d2b469" font-family="'Helvetica Neue',Arial,sans-serif" font-size="22" letter-spacing="6">BACKTESTING THAT TELLS THE TRUTH</text>
+<text x="472" y="238" fill="#a9a0b5" font-family="'Helvetica Neue',Arial,sans-serif" font-size="20">Walk-forward research for quantitative trading, with a fox that checks your math.</text>
+<rect x="470" y="268" width="135" height="34" rx="17" fill="none" stroke="#d946ef" stroke-width="1.5"/><text x="537.5" y="290" fill="#f4f5f6" font-family="'Helvetica Neue',Arial,sans-serif" font-size="14" letter-spacing="1.5" text-anchor="middle">PURGED CV</text><rect x="617" y="268" width="80" height="34" rx="17" fill="none" stroke="#d946ef" stroke-width="1.5"/><text x="657.0" y="290" fill="#f4f5f6" font-family="'Helvetica Neue',Arial,sans-serif" font-size="14" letter-spacing="1.5" text-anchor="middle">CPCV</text><rect x="709" y="268" width="201" height="34" rx="17" fill="none" stroke="#d946ef" stroke-width="1.5"/><text x="809.5" y="290" fill="#f4f5f6" font-family="'Helvetica Neue',Arial,sans-serif" font-size="14" letter-spacing="1.5" text-anchor="middle">DEFLATED SHARPE</text><rect x="922" y="268" width="69" height="34" rx="17" fill="none" stroke="#d946ef" stroke-width="1.5"/><text x="956.5" y="290" fill="#f4f5f6" font-family="'Helvetica Neue',Arial,sans-serif" font-size="14" letter-spacing="1.5" text-anchor="middle">PBO</text><rect x="1003" y="268" width="190" height="34" rx="17" fill="none" stroke="#d946ef" stroke-width="1.5"/><text x="1098.0" y="290" fill="#f4f5f6" font-family="'Helvetica Neue',Arial,sans-serif" font-size="14" letter-spacing="1.5" text-anchor="middle">BACKTEST AUDIT</text>
+<text x="472" y="352" fill="#a9a0b5" font-family="'JetBrains Mono',Consolas,Menlo,monospace" font-size="15">make new NAME=my_idea &#160;·&#160; make walkforward &#160;·&#160; make audit</text>
+</svg>
