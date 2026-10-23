@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlgoMaschine · results</title>
+<link rel="icon" type="image/svg+xml" href="static/mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@300;400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/style.css">
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("am-theme"); } catch (e) {}
+    if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-expand" viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-collapse" viewBox="0 0 16 16"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-theme" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></symbol>
+</svg>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./#results" aria-label="AlgoMaschine, home">
+      <img src="static/mark.svg" alt="">
+      <span class="wordmark"><b>AlgoMaschine</b><small>research engine · results</small></span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#results" data-tab="results">Results</a>
+      <a href="#audit" data-tab="audit">Audit</a>
+      <a href="method">Method</a>
+    </nav>
+    <div class="top-right">
+      <div class="status-line" id="status" aria-live="polite">loading…</div>
+      <button class="icon-btn" id="theme" title="Switch light / dark" aria-label="Switch between light and dark theme"><svg><use href="#i-theme"/></svg></button>
+    </div>
+  </div>
+</header>
+<main>
+<section id="tab-results">
+  <div class="page-head">
+    <h1 id="title">Results</h1>
+    <p class="lede" id="meta"></p>
+    <p class="plain" id="audit-note"><b>Before you read the numbers.</b> The <a href="#audit">Audit</a> tab asks whether luck, the market,
+      the search or an error could explain these results. Run <code>make audit</code> if it is empty.</p>
+  </div>
+  <div id="pending" class="note" hidden></div>
+  <div class="tiles" id="tiles"></div>
+  <figure class="card" data-explain="main">
+    <div class="card-head"><div><h3>System against buy-and-hold</h3><p class="sub" id="main-sub"></p></div></div>
+    <div class="controls"><span>Scale</span>
+      <span class="seg"><button aria-pressed="true" data-scale="dual">Two scales</button><button aria-pressed="false" data-scale="indexed">One scale · growth of $1</button></span></div>
+    <div class="chart tall" id="c-main"></div></figure>
+  <figure class="card" data-explain="dd">
+    <div class="card-head"><div><h3>Drawdowns</h3><p class="sub">Loss from the previous peak, day by day.</p></div></div>
+    <div class="chart short" id="c-dd"></div></figure>
+  <figure class="card" data-explain="perf">
+    <div class="card-head"><div><h3>Walk-forward performance</h3>
+      <p class="sub">Hover over a column heading for its meaning. DSR counts every configuration in the project's trial ledger (<span id="ntrials"></span>).</p></div></div>
+    <div class="scroll" id="t-perf"></div></figure>
+  <h2>Is it real? The overfitting controls</h2>
+  <div class="grid2">
+    <figure class="card" data-explain="cal">
+      <div class="card-head"><div><h3>Auto-calibration · the configuration chosen each year</h3><p class="sub">Larger dot = higher cross-validated Sharpe ratio.</p></div></div>
+      <div class="chart" id="c-cal"></div></figure>
+    <figure class="card" data-explain="pbo">
+      <div class="card-head"><div><h3>Probability of backtest overfitting</h3><p class="sub" id="pbo-sub"></p></div></div>
+      <div class="chart" id="c-pbo"></div></figure>
+    <figure class="card" data-explain="cpcv">
+      <div class="card-head"><div><h3>Combinatorial purged cross-validation · Sharpe of every path</h3><p class="sub" id="cpcv-sub"></p></div></div>
+      <div class="chart" id="c-cpcv"></div></figure>
+    <figure class="card" data-explain="review">
+      <div class="card-head"><div><h3>Pre-run review</h3><p class="sub">The machinery tested where the answer is known: noise must find nothing, a planted effect must be found.</p></div></div>
+      <div id="review"></div></figure>
+  </div>
+  <figure class="card"><div class="card-head"><div><h3>Notes and caveats</h3></div></div><div id="notes" class="small"></div></figure>
+  <figure class="card" data-explain="trades"><div class="card-head"><div><h3>Recent trades</h3><p class="sub">The last 60 trades, newest first.</p></div></div>
+    <div class="scroll" id="t-trades"></div></figure>
+</section>
+
+<section id="tab-audit" hidden>
+  <div class="page-head">
+    <h1>Audit: is it too good to be true?</h1>
+    <p class="lede">A good-looking backtest can be explained by four things other than skill: <b>luck</b> (a short record),
+      <b>the search</b> (the best of many tries always looks good), <b>the market</b> (being long in a rising market) and
+      <b>errors</b> (using information that was not available at the time). The audit applies the tests of the quantitative finance
+      literature, each with a pass rule fixed in code before the results are seen. The <a href="method">Method</a> page explains each one.</p>
+    <p class="plain"><b>How to read it.</b> <span class="badge pass"><span class="ic">✓</span>Pass</span> the result survives the test.
+      <span class="badge warn"><span class="ic">!</span>Warn</span> a weakness worth knowing. <span class="badge fail"><span class="ic">✕</span>Fail</span>
+      the test explains the result away. One failure in a core test is enough for "not proven".</p>
+  </div>
+  <div id="audit-pending" class="note" hidden></div>
+  <div class="verdicts" id="verdicts"></div>
+  <figure class="card" data-explain="findings"><div class="card-head"><div><h3>What the audit found</h3><p class="sub" id="audit-meta"></p></div></div>
+    <ul class="findings" id="findings"></ul></figure>
+  <figure class="card" data-explain="detail"><div class="card-head"><div><h3 id="detail-title">All tests</h3>
+    <p class="sub">Each test: the measured value, the rule, why it matters and where it comes from.</p></div></div>
+    <div class="controls"><span class="seg" id="detail-seg"></span></div>
+    <div class="tests" id="tests"></div></figure>
+</section>
+</main>
+<footer class="site"><div class="inner"><img src="static/mark.svg" alt=""><span>AlgoMaschine · research engine · results are research, not investment advice</span></div></footer>
+<div id="tip" role="tooltip" hidden></div>
+<script src="static/app.js"></script>
+</body>
+</html>

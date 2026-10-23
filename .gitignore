@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+rust/*/target/
+outputs/
+data/
+.amq/

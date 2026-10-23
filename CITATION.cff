@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "AlgoMaschine Kit: walk-forward backtesting framework for quantitative trading"
+type: software
+authors:
+  - name: "AlgoMaschine"
+license: MIT
+date-released: "2026-10-23"
+keywords:
+  - backtesting
+  - walk-forward
+  - quantitative finance
+  - deflated Sharpe ratio
+  - cross-validation

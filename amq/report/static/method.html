@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlgoMaschine Method</title>
+<meta name="description" content="How every AlgoMaschine result is produced and audited: principles, validation toolkit, the audit's tests and formulas.">
+<link rel="icon" type="image/svg+xml" href="static/mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Montserrat:wght@300;400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="static/style.css">
+<link rel="stylesheet" href="static/paper.css">
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("am-theme"); } catch (e) {}
+    if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.querySelector('article.paper'), {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+  <symbol id="i-theme" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></symbol>
+</svg>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./#results" aria-label="AlgoMaschine, home">
+      <img src="static/mark.svg" alt="">
+      <span class="wordmark"><b>AlgoMaschine</b><small>research engine · method</small></span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <a href="./#results">Results</a>
+      <a href="./#audit">Audit</a>
+      <a href="method" aria-current="page">Method</a>
+    </nav>
+    <div class="top-right">
+      <button class="icon-btn" id="theme" title="Switch light / dark" aria-label="Switch between light and dark theme"><svg><use href="#i-theme"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="paper-wrap">
+<nav class="toc" aria-label="Contents"><b>Contents</b><ol id="toc-list"><li><a href="#s1">1 Why most backtests are wrong</a></li><li><a href="#s6">2 The validation toolkit</a></li><li class="sub"><a href="#s6-purge">2.1 Purged cross-validation with an embargo</a></li><li class="sub"><a href="#s6-cpcv">2.3 Combinatorial purged cross-validation</a></li><li class="sub"><a href="#s6-pbo">2.4 The probability of backtest overfitting</a></li><li class="sub"><a href="#s6-dsr">2.5 The probabilistic and deflated Sharpe ratios</a></li><li><a href="#s7">3 The forensic audit</a></li><li><a href="#glossary">Glossary</a></li><li><a href="#refs">References</a></li></ol></nav>
+<article class="paper">
+<details class="toc-mobile"><summary>Contents</summary><ol id="toc-mobile-list"></ol></details>
+<p class="kicker">Method · algomaschine-kit</p>
+<h1>The AlgoMaschine method</h1>
+<p class="subtitle">How every result on this dashboard is produced and audited: the principles, the validation toolkit, and the tests
+  that decide whether a backtest deserves belief, with their formulas and the reasons behind them.</p>
+<div class="byline"><span>AlgoMaschine Research</span><span>The generic part of the AlgoMaschine white paper</span><button type="button" class="linkbtn" id="print">Save as PDF</button></div>
+<h2 id="s1"><span class="secno">1</span>Why most backtests are wrong</h2>
+<p>A backtest replays a trading rule on history. It is the only laboratory a trader has, and a treacherous one. Markets offer a
+  small signal buried in a great deal of noise; history is a single path that cannot be run again; and the researcher can try as
+  many variations as time allows. Each of these on its own inflates results. Together they make most backtests, including many
+  published ones, wrong (Harvey, Liu and Zhu, 2016; Bailey, Borwein, López de Prado and Zhu, 2014).</p>
+<div class="box plainbox"><b class="lbl">In plain words</b>
+  <p>If a thousand people each toss a coin ten times, a few will throw nine or ten heads. That does not make them skilled tossers.
+    A backtest that is the best of many attempts is one of those lucky tossers, unless we can show otherwise.</p></div>
+<div class="box quant"><b class="lbl">For the quant</b>
+  <p>With \(T\) years of data, the standard error of an annualised Sharpe ratio is roughly \(1/\sqrt{T}\). The largest of \(N\)
+    independent estimates whose true value is zero is then, to first order,</p>
+  $$E\Big[\max_{n\le N}\widehat{SR}_n\Big]\;\approx\;\sqrt{\frac{2\ln N}{T}}.$$
+  <p>Trying \(N=45\) variations on \(T=5\) years yields a best Sharpe ratio of about 1.2 from pure noise. Read the other way, the
+    formula gives the minimum backtest length needed for a given number of trials (Section 3).</p></div>
+
+<h3>Four explanations other than skill</h3>
+<p>Every good-looking backtest must be defended against four rival explanations, plus one question of fragility. They organise
+  the whole of this paper and of the audit in Section 3.</p>
+<ol>
+  <li><b>Luck.</b> The record is too short or too noisy to tell a real edge from chance.</li>
+  <li><b>The search.</b> The result is the best of many tries, and the best of many tries always looks good.</li>
+  <li><b>The market.</b> The profit comes from being long in a rising market, not from timing.</li>
+  <li><b>Errors.</b> The backtest used information that was not available at the time, skipped costs, or trusted bad data.</li>
+  <li><b>Fragility.</b> The result depends on a handful of days, one year, leverage, or costs that are too kind.</li>
+</ol>
+
+<h3>Our rules of engagement</h3>
+<figure class="fig" id="fig-pipeline">
+  <div class="fig-scroll">
+  <svg viewBox="0 0 740 262" role="img" aria-label="Research pipeline from idea to paper trading">
+    <rect class="bx" x="6" y="10" width="161" height="74" rx="6"/><text class="ts" x="18" y="32">1 · Idea and data</text><text x="18" y="52">hypothesis, sources,</text><text x="18" y="68">clock &amp; quality checks</text>
+    <rect class="bxa" x="195" y="10" width="161" height="74" rx="6"/><text class="ts" x="207" y="32">2 · Pre-registered spec</text><text x="207" y="52">rules, grid, costs,</text><text x="207" y="68">written before results</text>
+    <rect class="bx" x="384" y="10" width="161" height="74" rx="6"/><text class="ts" x="396" y="32">3 · Pre-run review</text><text x="396" y="52">noise must find nothing,</text><text x="396" y="68">planted effect is found</text>
+    <rect class="bx" x="573" y="10" width="161" height="74" rx="6"/><text class="ts" x="585" y="32">4 · Walk-forward</text><text x="585" y="52">choose on the past,</text><text x="585" y="68">trade the next year</text>
+    <rect class="bx" x="573" y="140" width="161" height="74" rx="6"/><text class="ts" x="585" y="162">5 · Diagnostics</text><text x="585" y="182">PBO, CPCV, deflated</text><text x="585" y="198">Sharpe, importance</text>
+    <rect class="bxa" x="384" y="140" width="161" height="74" rx="6"/><text class="ts" x="396" y="162">6 · Forensic audit</text><text x="396" y="182">luck, search, market,</text><text x="396" y="198">errors, fragility</text>
+    <rect class="bx" x="195" y="140" width="161" height="74" rx="6"/><text class="ts" x="207" y="162">7 · Paper trading</text><text x="207" y="182">unchanged, from today;</text><text x="207" y="198">then real capital</text>
+    <line class="arw" x1="169" y1="47" x2="192" y2="47"/><line class="arw" x1="358" y1="47" x2="381" y2="47"/><line class="arw" x1="547" y1="47" x2="570" y2="47"/>
+    <line class="arw" x1="653" y1="86" x2="653" y2="137"/><line class="arw" x1="571" y1="177" x2="548" y2="177"/><line class="arw" x1="382" y1="177" x2="359" y2="177"/>
+    <path class="lnd" d="M 464,216 L 464,238 L 86,238 L 86,90"/><path class="arw" d="M 86,100 L 86,88"/>
+    <text class="tm" x="100" y="256">a failure sends the idea back to the start, and every trial stays in the ledger</text>
+  </svg></div>
+  <figcaption><b>Figure 1.</b> The research pipeline. Steps 2, 3 and 6 are the ones most backtests skip.</figcaption>
+</figure>
+<ol>
+  <li><b>Write it down first.</b> The hypothesis, the parameter grid, the costs and the tests are fixed in a specification before
+    any result is computed (<code>SPEC.md</code>, frozen with <code>make spec-lock</code>). Changes after that are disclosed and counted.</li>
+  <li><b>Count every trial.</b> A ledger records every configuration ever tried. The deflated Sharpe ratio (Section 2) charges
+    the final result for all of them.</li>
+  <li><b>Walk forward.</b> Every choice for a given year is made with data that ends before that year starts.</li>
+  <li><b>Test the testing machine.</b> Before any real-data run, the pipeline must find nothing in pure noise and must find an
+    effect we plant on purpose (Section 2.7).</li>
+  <li><b>Audit anything that looks good.</b> The forensic audit (Section 3) is run on every attractive result.</li>
+  <li><b>Paper before money.</b> A backtest, however clean, is evidence about the past. Only new data can confirm an edge.</li>
+</ol>
+<div class="box story"><b class="lbl">From our own mistakes</b>
+  <ul>
+    <li><b>A clock error created an edge.</b> An early version of one of our systems, a large rule search, found that currency moves seemed to lead the US stock
+      market. The lead came from the data: before 2021 the vendor's five-minute FX bars carried New York wall-clock times labelled as
+      UTC. The data loader now re-stamps those clocks, and a quality gate checks, year by year, that the US payrolls release shows
+      up at 08:30 New York time in the data.</li>
+    <li><b>The signal price was the entry price.</b> A month-end reversal after the WM/R fixing looked like a new edge
+      (t = 4.5) until we noticed that the signal and the entry used the same fixing price. With a five-minute entry delay, only one
+      currency pair survived, at t = 3.3. Since then a signal is never allowed to trade at the price that created it.</li>
+    <li><b>Data artefacts in emerging markets.</b> A later search's headline out-of-sample Sharpe ratio of 1.95 came mostly from
+      emerging-market currencies at their local open, where quotes are likely indicative rather than tradable, and from currency
+      momentum computed without the interest carry. Without them the Sharpe ratio fell to about 0.1.</li>
+  </ul>
+  <p>Each of these is now a standing check: clock tests in the data gate, the execution-delay and point-in-time tests of the audit,
+    and data flags on every alpha.</p></div>
+
+<h2 id="s6"><span class="secno">2</span>The validation toolkit</h2>
+<p>This section describes the methods that protect every choice made <i>inside</i> the models. Section 3 describes the audit that
+  judges the <i>result</i>. Most of these methods come from López de Prado's <i>Advances in Financial Machine Learning</i> (2018,
+  "AFML") and <i>Machine Learning for Asset Managers</i> (2020).</p>
+
+<h3 id="s6-purge">2.1 Purged cross-validation with an embargo</h3>
+<div class="box why"><b class="lbl">Motivation</b>
+  <p>Ordinary cross-validation assumes the observations are independent. Trades are not: a 21-day trade entered on 3 March and one
+    entered on 5 March share almost all their outcome. If one sits in the training set and the other in the test set, the model is
+    tested on an answer it has already seen. Purging removes such overlaps; an embargo after each test block also removes trades
+    that could have learnt from the test period through serial correlation.</p></div>
+<p>Let trade \(i\) span \([e_i,t_{1,i}]\) and a test block span \([a,b]\). A training trade is kept only if</p>
+$$[e_i,\,t_{1,i}]\cap[a,\,b]=\varnothing\quad\text{and}\quad e_i\notin(b,\,b+h],\qquad h=0.01\,T.$$
+<figure class="fig" id="fig-purge">
+  <div class="fig-scroll">
+  <svg viewBox="0 0 740 190" role="img" aria-label="Purged k-fold with embargo">
+    <text class="tm" x="20" y="22">time →</text>
+    <rect class="bx2" x="20" y="40" width="130" height="34"/><rect class="bx2" x="150" y="40" width="96" height="34"/>
+    <rect x="246" y="40" width="34" height="34" style="fill:var(--div-neg);opacity:0.22;stroke:var(--div-neg)"/>
+    <rect class="bxa" x="280" y="40" width="140" height="34"/>
+    <rect x="420" y="40" width="30" height="34" style="fill:var(--s2);opacity:0.25;stroke:var(--s2)"/>
+    <rect class="bx2" x="450" y="40" width="140" height="34"/><rect class="bx2" x="590" y="40" width="130" height="34"/>
+    <text class="ts" x="316" y="62">test block</text><text x="60" y="62">train</text><text x="490" y="62">train</text>
+    <text class="ts" x="210" y="104">purged</text><text class="tm" x="160" y="120">trades whose outcome runs</text><text class="tm" x="160" y="134">into the test block</text>
+    <line class="lnd" x1="262" y1="78" x2="248" y2="92"/>
+    <text class="ts" x="410" y="104">embargo</text><text class="tm" x="400" y="120">1% of the sample</text><text class="tm" x="400" y="134">after the test block</text>
+    <line class="lnd" x1="435" y1="78" x2="440" y2="92"/>
+    <text class="tm" x="20" y="170">Each of the k blocks takes a turn as the test block; scores are averaged over the k turns.</text>
+  </svg></div>
+  <figcaption><b>Figure 2.</b> Purged k-fold cross-validation (AFML ch. 7). The model never trains on a trade whose outcome it is
+    later asked to predict.</figcaption>
+</figure>
+
+<h3>2.2 Sample uniqueness</h3>
+<p>Overlapping trades also carry less information than their number suggests. With \(c_t\) the number of trades active on day \(t\),
+  the average uniqueness of trade \(i\) is</p>
+$$\bar u_i=\frac{1}{t_{1,i}-e_i+1}\sum_{t=e_i}^{t_{1,i}}\frac{1}{c_t}.$$
+<p>It weights each trade when fitting the meta-model, and the mean uniqueness sets the size of each tree's bootstrap sample, so
+  that the forest does not treat twenty overlapping copies of one market episode as twenty independent facts (AFML ch. 4).</p>
+
+<h3 id="s6-cpcv">2.3 Combinatorial purged cross-validation</h3>
+<div class="box why"><b class="lbl">Motivation</b>
+  <p>A walk-forward test produces a single path through history, and one path can be lucky. Combinatorial purged cross-validation
+    (AFML ch. 12) splits the history into \(N\) groups, uses every choice of \(k\) of them as the test set, and stitches the test
+    results into \(\varphi=\frac{k}{N}\binom{N}{k}\) complete backtest paths. With \(N=10\) and \(k=2\) that is 45 splits and 9 paths.
+    A robust rule shows most of its paths in profit.</p></div>
+<figure class="fig" id="fig-cpcv">
+  <div class="fig-scroll">
+  <svg viewBox="0 0 740 330" role="img" aria-label="Combinatorial purged cross-validation with six groups and two test groups">
+    <text class="tm" x="20" y="18">split</text>
+    <g class="tm"><text x="92" y="18">G1</text><text x="152" y="18">G2</text><text x="212" y="18">G3</text><text x="272" y="18">G4</text><text x="332" y="18">G5</text><text x="392" y="18">G6</text></g>
+    <g><text class="tm" x="24" y="39">1</text><rect class="bxa" x="80" y="26" width="56" height="17"/><text class="ts" x="104" y="39">1</text><rect class="bxa" x="140" y="26" width="56" height="17"/><text class="ts" x="164" y="39">1</text><rect class="bx2" x="200" y="26" width="56" height="17"/><rect class="bx2" x="260" y="26" width="56" height="17"/><rect class="bx2" x="320" y="26" width="56" height="17"/><rect class="bx2" x="380" y="26" width="56" height="17"/><text class="tm" x="24" y="58">2</text><rect class="bxa" x="80" y="45" width="56" height="17"/><text class="ts" x="104" y="58">2</text><rect class="bx2" x="140" y="45" width="56" height="17"/><rect class="bxa" x="200" y="45" width="56" height="17"/><text class="ts" x="224" y="58">1</text><rect class="bx2" x="260" y="45" width="56" height="17"/><rect class="bx2" x="320" y="45" width="56" height="17"/><rect class="bx2" x="380" y="45" width="56" height="17"/><text class="tm" x="24" y="77">3</text><rect class="bxa" x="80" y="64" width="56" height="17"/><text class="ts" x="104" y="77">3</text><rect class="bx2" x="140" y="64" width="56" height="17"/><rect class="bx2" x="200" y="64" width="56" height="17"/><rect class="bxa" x="260" y="64" width="56" height="17"/><text class="ts" x="284" y="77">1</text><rect class="bx2" x="320" y="64" width="56" height="17"/><rect class="bx2" x="380" y="64" width="56" height="17"/><text class="tm" x="24" y="96">4</text><rect class="bxa" x="80" y="83" width="56" height="17"/><text class="ts" x="104" y="96">4</text><rect class="bx2" x="140" y="83" width="56" height="17"/><rect class="bx2" x="200" y="83" width="56" height="17"/><rect class="bx2" x="260" y="83" width="56" height="17"/><rect class="bxa" x="320" y="83" width="56" height="17"/><text class="ts" x="344" y="96">1</text><rect class="bx2" x="380" y="83" width="56" height="17"/><text class="tm" x="24" y="115">5</text><rect class="bxa" x="80" y="102" width="56" height="17"/><text class="ts" x="104" y="115">5</text><rect class="bx2" x="140" y="102" width="56" height="17"/><rect class="bx2" x="200" y="102" width="56" height="17"/><rect class="bx2" x="260" y="102" width="56" height="17"/><rect class="bx2" x="320" y="102" width="56" height="17"/><rect class="bxa" x="380" y="102" width="56" height="17"/><text class="ts" x="404" y="115">1</text><text class="tm" x="24" y="134">6</text><rect class="bx2" x="80" y="121" width="56" height="17"/><rect class="bxa" x="140" y="121" width="56" height="17"/><text class="ts" x="164" y="134">2</text><rect class="bxa" x="200" y="121" width="56" height="17"/><text class="ts" x="224" y="134">2</text><rect class="bx2" x="260" y="121" width="56" height="17"/><rect class="bx2" x="320" y="121" width="56" height="17"/><rect class="bx2" x="380" y="121" width="56" height="17"/><text class="tm" x="24" y="153">7</text><rect class="bx2" x="80" y="140" width="56" height="17"/><rect class="bxa" x="140" y="140" width="56" height="17"/><text class="ts" x="164" y="153">3</text><rect class="bx2" x="200" y="140" width="56" height="17"/><rect class="bxa" x="260" y="140" width="56" height="17"/><text class="ts" x="284" y="153">2</text><rect class="bx2" x="320" y="140" width="56" height="17"/><rect class="bx2" x="380" y="140" width="56" height="17"/><text class="tm" x="24" y="172">8</text><rect class="bx2" x="80" y="159" width="56" height="17"/><rect class="bxa" x="140" y="159" width="56" height="17"/><text class="ts" x="164" y="172">4</text><rect class="bx2" x="200" y="159" width="56" height="17"/><rect class="bx2" x="260" y="159" width="56" height="17"/><rect class="bxa" x="320" y="159" width="56" height="17"/><text class="ts" x="344" y="172">2</text><rect class="bx2" x="380" y="159" width="56" height="17"/><text class="tm" x="24" y="191">9</text><rect class="bx2" x="80" y="178" width="56" height="17"/><rect class="bxa" x="140" y="178" width="56" height="17"/><text class="ts" x="164" y="191">5</text><rect class="bx2" x="200" y="178" width="56" height="17"/><rect class="bx2" x="260" y="178" width="56" height="17"/><rect class="bx2" x="320" y="178" width="56" height="17"/><rect class="bxa" x="380" y="178" width="56" height="17"/><text class="ts" x="404" y="191">2</text><text class="tm" x="24" y="210">10</text><rect class="bx2" x="80" y="197" width="56" height="17"/><rect class="bx2" x="140" y="197" width="56" height="17"/><rect class="bxa" x="200" y="197" width="56" height="17"/><text class="ts" x="224" y="210">3</text><rect class="bxa" x="260" y="197" width="56" height="17"/><text class="ts" x="284" y="210">3</text><rect class="bx2" x="320" y="197" width="56" height="17"/><rect class="bx2" x="380" y="197" width="56" height="17"/><text class="tm" x="24" y="229">11</text><rect class="bx2" x="80" y="216" width="56" height="17"/><rect class="bx2" x="140" y="216" width="56" height="17"/><rect class="bxa" x="200" y="216" width="56" height="17"/><text class="ts" x="224" y="229">4</text><rect class="bx2" x="260" y="216" width="56" height="17"/><rect class="bxa" x="320" y="216" width="56" height="17"/><text class="ts" x="344" y="229">3</text><rect class="bx2" x="380" y="216" width="56" height="17"/><text class="tm" x="24" y="248">12</text><rect class="bx2" x="80" y="235" width="56" height="17"/><rect class="bx2" x="140" y="235" width="56" height="17"/><rect class="bxa" x="200" y="235" width="56" height="17"/><text class="ts" x="224" y="248">5</text><rect class="bx2" x="260" y="235" width="56" height="17"/><rect class="bx2" x="320" y="235" width="56" height="17"/><rect class="bxa" x="380" y="235" width="56" height="17"/><text class="ts" x="404" y="248">3</text><text class="tm" x="24" y="267">13</text><rect class="bx2" x="80" y="254" width="56" height="17"/><rect class="bx2" x="140" y="254" width="56" height="17"/><rect class="bx2" x="200" y="254" width="56" height="17"/><rect class="bxa" x="260" y="254" width="56" height="17"/><text class="ts" x="284" y="267">4</text><rect class="bxa" x="320" y="254" width="56" height="17"/><text class="ts" x="344" y="267">4</text><rect class="bx2" x="380" y="254" width="56" height="17"/><text class="tm" x="24" y="286">14</text><rect class="bx2" x="80" y="273" width="56" height="17"/><rect class="bx2" x="140" y="273" width="56" height="17"/><rect class="bx2" x="200" y="273" width="56" height="17"/><rect class="bxa" x="260" y="273" width="56" height="17"/><text class="ts" x="284" y="286">5</text><rect class="bx2" x="320" y="273" width="56" height="17"/><rect class="bxa" x="380" y="273" width="56" height="17"/><text class="ts" x="404" y="286">4</text><text class="tm" x="24" y="305">15</text><rect class="bx2" x="80" y="292" width="56" height="17"/><rect class="bx2" x="140" y="292" width="56" height="17"/><rect class="bx2" x="200" y="292" width="56" height="17"/><rect class="bx2" x="260" y="292" width="56" height="17"/><rect class="bxa" x="320" y="292" width="56" height="17"/><text class="ts" x="344" y="305">5</text><rect class="bxa" x="380" y="292" width="56" height="17"/><text class="ts" x="404" y="305">5</text></g>
+    <text class="ts" x="460" y="60">6 groups, 2 in the test set:</text><text x="460" y="80">15 splits (rows)</text>
+    <text x="460" y="100">each group is tested 5 times</text><text class="ts" x="460" y="130">numbers = backtest path</text>
+    <text x="460" y="150">path 1 takes each group's</text><text x="460" y="166">first test result, path 2 the</text>
+    <text x="460" y="182">second, and so on: 5 full paths</text>
+    <text class="tm" x="460" y="220">For the S&amp;P Lab: 10 groups,</text><text class="tm" x="460" y="236">2 in the test set, 45 splits, 9 paths.</text>
+  </svg></div>
+  <figcaption><b>Figure 3.</b> Combinatorial purged cross-validation (AFML ch. 12), shown with six groups. Shaded cells are test groups;
+    the number in each is the backtest path it belongs to.</figcaption>
+</figure>
+
+<h3 id="s6-pbo">2.4 The probability of backtest overfitting</h3>
+<div class="box why"><b class="lbl">Motivation</b>
+  <p>A calibration that picks the best of many configurations can be picking noise. The probability of backtest overfitting (Bailey,
+    Borwein, López de Prado and Zhu, 2017) measures how often the configuration that looks best on one half of history turns out
+    below average on the other half, using every possible half.</p></div>
+<div class="algo"><span class="c">Algorithm 4 · combinatorially symmetric cross-validation (CSCV)</span>
+M = T × N matrix of daily returns, one column per configuration
+split the rows into S = 16 blocks of equal length
+<b>for</b> each of the C(16, 8) = 12,870 ways to pick 8 blocks as "in sample":
+    n* = configuration with the best in-sample Sharpe ratio
+    ω  = rank of n* among all N configurations out of sample, divided by N + 1
+    λ  = ln( ω / (1 − ω) )          <span class="c"># below 0: worse than the median out of sample</span>
+PBO = share of the 12,870 splits with λ ≤ 0</div>
+<p>A PBO near 0 means the selection carries real information; 0.5 means it is no better than a coin; above 0.5, the best in sample
+  tends to be worse than average out of sample. PBO says nothing about whether the chosen rule makes money, only whether choosing
+  among the configurations was meaningful.</p>
+<figure class="fig" id="fig-cscv">
+  <div class="fig-scroll">
+  <svg viewBox="0 0 740 200" role="img" aria-label="CSCV split of the return matrix">
+    <g><rect class="bxa" x="30" y="20" width="200" height="18"/><rect class="bx2" x="30" y="40" width="200" height="18"/><rect class="bxa" x="30" y="60" width="200" height="18"/><rect class="bx2" x="30" y="80" width="200" height="18"/><rect class="bx2" x="30" y="100" width="200" height="18"/><rect class="bxa" x="30" y="120" width="200" height="18"/><rect class="bxa" x="30" y="140" width="200" height="18"/><rect class="bx2" x="30" y="160" width="200" height="18"/></g>
+    <text class="tm" x="30" y="195">time blocks (rows) × configurations (columns)</text>
+    <line class="arw" x1="245" y1="60" x2="300" y2="60"/><line class="arw" x1="245" y1="130" x2="300" y2="130"/>
+    <rect class="bxa" x="305" y="36" width="170" height="48" rx="5"/><text class="ts" x="317" y="56">in sample (shaded)</text><text x="317" y="74">pick the best column</text>
+    <rect class="bx" x="305" y="106" width="170" height="48" rx="5"/><text class="ts" x="317" y="126">out of sample</text><text x="317" y="144">where does it rank?</text>
+    <line class="arw" x1="490" y1="110" x2="545" y2="96"/>
+    <rect class="bx" x="550" y="60" width="170" height="70" rx="5"/><text class="ts" x="562" y="82">λ = logit of the rank</text><text x="562" y="100">repeat for 12,870 splits;</text><text x="562" y="116">PBO = share with λ ≤ 0</text>
+  </svg></div>
+  <figcaption><b>Figure 4.</b> CSCV: every half of the history plays in-sample once and out-of-sample once.</figcaption>
+</figure>
+
+<h3 id="s6-dsr">2.5 The probabilistic and deflated Sharpe ratios</h3>
+<p>For per-period Sharpe ratio \(\widehat{SR}\) over \(T\) observations with skewness \(\hat\gamma_3\) and kurtosis \(\hat\gamma_4\), the
+  probability that the true Sharpe ratio exceeds a benchmark \(SR^\ast\) is (Bailey and López de Prado, 2012)</p>
+$$\widehat{PSR}(SR^\ast)=\Phi\!\left(\frac{(\widehat{SR}-SR^\ast)\sqrt{T-1}}{\sqrt{1-\hat\gamma_3\,\widehat{SR}+\frac{\hat\gamma_4-1}{4}\,\widehat{SR}^2}}\right).$$
+<p>Fat tails and negative skew widen the uncertainty, so the same Sharpe ratio is less convincing for a strategy with crash risk.
+  The deflated Sharpe ratio (Bailey and López de Prado, 2014) sets the benchmark to the best Sharpe ratio expected from \(N\) trials
+  with no skill, where \(V\) is the variance of the Sharpe ratios across the trials and \(\gamma\approx0.5772\) is the
+  Euler–Mascheroni constant:</p>
+$$SR^\ast=\sqrt{V}\left((1-\gamma)\,\Phi^{-1}\!\Big[1-\frac1N\Big]+\gamma\,\Phi^{-1}\!\Big[1-\frac{1}{N e}\Big]\right),\qquad DSR=\widehat{PSR}(SR^\ast).$$
+<p>We require \(DSR\ge 0.95\). The number of trials \(N\) comes from the ledger: every configuration of every model plus every earlier
+  selection process of the factory (the count is shown next to every deflated Sharpe ratio).</p>
+<div class="box plainbox"><b class="lbl">In plain words</b>
+  <p>The deflated Sharpe ratio asks: "given how many things you tried, what is the chance that this result is better than the best
+    of that many coin-tossers?" Below 95%, we do not call it evidence.</p></div>
+
+<h3>2.6 Feature importance</h3>
+<p>Mean decrease in accuracy (MDA) measures how much the meta-model's out-of-fold log-loss worsens when one input is randomly
+  shuffled, under purged cross-validation (AFML ch. 8). An input the model truly uses shows a clear increase; values near zero mean
+  it adds nothing. In the S&amp;P Lab every input of the wave model's meta-model was near zero: the second opinion learnt almost nothing, which is
+  itself a finding.</p>
+
+<h3>2.7 Testing the testing machine: the pre-run review</h3>
+<div class="box why"><b class="lbl">Motivation</b>
+  <p>A validation pipeline can have bugs too, and a bug in the pipeline invalidates every result it produces. So before any run on
+    real data, the pipeline is run on data where the right answer is known.</p></div>
+<ul>
+  <li><b>Look-ahead probes.</b> Future data are perturbed and every calibration decision before the perturbation must stay the same;
+    turning points must be used only after confirmation; the fractional difference must be causal; purging must remove every
+    overlapping label.</li>
+  <li><b>Pure noise.</b> The market's returns with random signs contain no pattern. The pipeline must find none, and its
+    out-of-sample Sharpe ratio must be near zero. In the S&amp;P Lab it was 0.01, while the configurations it chose had a median cross-validated Sharpe ratio of 0.40:
+    a live demonstration of selection bias, which walk-forward testing then removed.</li>
+  <li><b>A planted effect.</b> A pattern with a known edge (t ≈ 5 over the full sample) is inserted. The calibration must find it.
+    </li>
+</ul>
+<p>All checks must pass before <code>make walkforward</code> is allowed to run on real data (<code>make review</code>). A planted effect
+  must be large enough to be detectable at all; a test that is resized after its first run is disclosed in the specification.</p>
+
+<h2 id="s7"><span class="secno">3</span>The forensic audit</h2>
+<div class="box why"><b class="lbl">Motivation</b>
+  <p>The methods of Section 2 protect the choices made inside a model. They cannot tell whether the final result deserves belief.
+    A result can survive all of them and still be explained by luck, by the size of the search that produced it, by the market's
+    own rise, by an error, or by a few fortunate days. The audit asks those questions directly, with tests taken from the
+    literature on backtest overfitting and data snooping. The pass rules were fixed in code before the S&amp;P results were audited,
+    so they cannot be bent to fit.</p></div>
+<figure class="fig" id="fig-audit">
+  <div class="fig-scroll">
+  <svg viewBox="0 0 740 300" role="img" aria-label="The five questions of the audit">
+    <rect class="bx" x="20" y="14" width="230" height="84" rx="6"/><text class="ts" x="34" y="38">Luck</text><text x="34" y="58">Sharpe interval, PSR, DSR,</text><text x="34" y="76">MinTRL, MinBTL, haircut</text>
+    <rect class="bx" x="490" y="14" width="230" height="84" rx="6"/><text class="ts" x="504" y="38">The search</text><text x="504" y="58">Reality Check against all</text><text x="504" y="76">rules tried, PBO, plateau</text>
+    <rect class="bx" x="20" y="194" width="230" height="84" rx="6"/><text class="ts" x="34" y="218">The market</text><text x="34" y="238">random timing, buy-and-hold,</text><text x="34" y="256">alpha after beta, convexity</text>
+    <rect class="bx" x="490" y="194" width="230" height="84" rx="6"/><text class="ts" x="504" y="218">Errors</text><text x="504" y="238">plausibility, delay profile,</text><text x="504" y="256">rebuilt returns, point-in-time</text>
+    <rect class="bxa" x="270" y="112" width="200" height="56" rx="6"/><text class="ts" x="290" y="136">A result that</text><text class="ts" x="290" y="154">looks good</text>
+    <rect class="bx2" x="270" y="222" width="200" height="66" rx="6"/><text class="ts" x="284" y="244">Fragility</text><text x="284" y="262">costs, leverage, few days,</text><text x="284" y="278">one year, tails, bet count</text>
+    <line class="arw" x1="252" y1="80" x2="300" y2="110"/><line class="arw" x1="488" y1="80" x2="440" y2="110"/>
+    <line class="arw" x1="252" y1="214" x2="300" y2="170"/><line class="arw" x1="488" y1="214" x2="440" y2="170"/>
+    <line class="arw" x1="370" y1="220" x2="370" y2="172"/>
+  </svg></div>
+  <figcaption><b>Figure 5.</b> The audit asks whether anything other than skill can explain the result. Each box is a group of tests.</figcaption>
+</figure>
+
+<h3>3.1 The tests</h3>
+<div class="scroll">
+<table class="ptable">
+  <thead><tr><th>Test</th><th class="wrap" style="text-align:left">The question</th><th class="wrap" style="text-align:left">Pass rule</th><th class="wrap" style="text-align:left">Source</th></tr></thead>
+  <tbody>
+    <tr class="group"><td colspan="4"><b>Luck</b></td></tr>
+    <tr><td>S1 Sharpe interval</td><td class="wrap" style="text-align:left">Could the true Sharpe ratio be zero?</td><td class="wrap" style="text-align:left">95% interval excludes 0</td><td class="wrap" style="text-align:left">Politis &amp; Romano (1994)</td></tr>
+    <tr><td>S2 PSR</td><td class="wrap" style="text-align:left">Probability the true Sharpe ratio is positive, given length, skew and tails</td><td class="wrap" style="text-align:left">≥ 0.95</td><td class="wrap" style="text-align:left">Bailey &amp; López de Prado (2012)</td></tr>
+    <tr><td>S3 DSR</td><td class="wrap" style="text-align:left">Better than the best of N trials with no skill?</td><td class="wrap" style="text-align:left">≥ 0.95</td><td class="wrap" style="text-align:left">Bailey &amp; López de Prado (2014)</td></tr>
+    <tr><td>S4 MinTRL</td><td class="wrap" style="text-align:left">Is the record long enough for its Sharpe ratio?</td><td class="wrap" style="text-align:left">record ≥ MinTRL</td><td class="wrap" style="text-align:left">Bailey &amp; López de Prado (2012)</td></tr>
+    <tr><td>S5 MinBTL</td><td class="wrap" style="text-align:left">Is the history long enough for the number of trials?</td><td class="wrap" style="text-align:left">warning if shorter</td><td class="wrap" style="text-align:left">Bailey et al. (2014)</td></tr>
+    <tr><td>S6 Haircut</td><td class="wrap" style="text-align:left">Significant after adjusting for every trial? Is t above 3?</td><td class="wrap" style="text-align:left">t &gt; 3 and adjusted p &lt; 0.05</td><td class="wrap" style="text-align:left">Harvey &amp; Liu (2015); Harvey, Liu &amp; Zhu (2016)</td></tr>
+    <tr><td>S7 Autocorrelation</td><td class="wrap" style="text-align:left">Is the annual Sharpe ratio inflated by serial correlation?</td><td class="wrap" style="text-align:left">adjustment removes ≤ 20%</td><td class="wrap" style="text-align:left">Lo (2002)</td></tr>
+    <tr class="group"><td colspan="4"><b>The search</b></td></tr>
+    <tr><td>D1 Reality Check</td><td class="wrap" style="text-align:left">Does the system beat the luckiest of everything tried?</td><td class="wrap" style="text-align:left">p &lt; 0.05</td><td class="wrap" style="text-align:left">White (2000); Hansen (2005)</td></tr>
+    <tr><td>D2 PBO</td><td class="wrap" style="text-align:left">Is choosing among the configurations meaningful?</td><td class="wrap" style="text-align:left">&lt; 0.20</td><td class="wrap" style="text-align:left">Bailey et al. (2017)</td></tr>
+    <tr><td>D3 Plateau</td><td class="wrap" style="text-align:left">Does the edge survive neighbouring settings?</td><td class="wrap" style="text-align:left">≥ 30% of configurations positive</td><td class="wrap" style="text-align:left">López de Prado (2018)</td></tr>
+    <tr class="group"><td colspan="4"><b>The market</b></td></tr>
+    <tr><td>T1 Random timing</td><td class="wrap" style="text-align:left">Would the same trades at random dates do as well?</td><td class="wrap" style="text-align:left">p &lt; 0.05</td><td class="wrap" style="text-align:left">Aronson (2006)</td></tr>
+    <tr><td>T2 Buy-and-hold</td><td class="wrap" style="text-align:left">Is the Sharpe ratio significantly above the index's?</td><td class="wrap" style="text-align:left">95% interval of the difference excludes 0</td><td class="wrap" style="text-align:left">Ledoit &amp; Wolf (2008)</td></tr>
+    <tr><td>T3 Alpha</td><td class="wrap" style="text-align:left">Is there return left after the market's own moves?</td><td class="wrap" style="text-align:left">t &gt; 2</td><td class="wrap" style="text-align:left">Sharpe (1964); Newey &amp; West (1987)</td></tr>
+    <tr><td>T4 Convexity</td><td class="wrap" style="text-align:left">Does it gain more in large market moves?</td><td class="wrap" style="text-align:left">information only</td><td class="wrap" style="text-align:left">Treynor &amp; Mazuy (1966)</td></tr>
+    <tr class="group"><td colspan="4"><b>Errors</b></td></tr>
+    <tr><td>L0 Plausibility</td><td class="wrap" style="text-align:left">Is the Sharpe ratio too high for a daily strategy?</td><td class="wrap" style="text-align:left">fail above 3, warn above 2</td><td class="wrap" style="text-align:left">practitioners' rule</td></tr>
+    <tr><td>L1 Delay profile</td><td class="wrap" style="text-align:left">Does the edge vanish if every trade is one day late?</td><td class="wrap" style="text-align:left">keeps half the Sharpe ratio</td><td class="wrap" style="text-align:left">Arnott, Harvey &amp; Markowitz (2019)</td></tr>
+    <tr><td>L2 Rebuilt returns</td><td class="wrap" style="text-align:left">Do yesterday's positions times today's prices give the reported returns?</td><td class="wrap" style="text-align:left">correlation ≥ 0.99, gap &lt; 0.25% a year</td><td class="wrap" style="text-align:left">López de Prado (2018)</td></tr>
+    <tr><td>L3 Point in time</td><td class="wrap" style="text-align:left">Does re-running at an earlier date change any earlier position?</td><td class="wrap" style="text-align:left">identical</td><td class="wrap" style="text-align:left">Arnott, Harvey &amp; Markowitz (2019)</td></tr>
+    <tr><td>L4 Provenance</td><td class="wrap" style="text-align:left">Was the idea already known to work on this data?</td><td class="wrap" style="text-align:left">warning if so</td><td class="wrap" style="text-align:left">McLean &amp; Pontiff (2016)</td></tr>
+    <tr class="group"><td colspan="4"><b>Fragility</b></td></tr>
+    <tr><td>R1 Costs</td><td class="wrap" style="text-align:left">Does it survive costs doubled and tripled?</td><td class="wrap" style="text-align:left">keeps half the Sharpe ratio at ×2</td><td class="wrap" style="text-align:left">Arnott, Harvey &amp; Markowitz (2019)</td></tr>
+    <tr><td>R2 Leverage</td><td class="wrap" style="text-align:left">What is left without leverage?</td><td class="wrap" style="text-align:left">keeps half the Sharpe ratio at 1×</td><td class="wrap" style="text-align:left">Moreira &amp; Muir (2017)</td></tr>
+    <tr><td>R3 Stability</td><td class="wrap" style="text-align:left">Does it work in both halves and most years?</td><td class="wrap" style="text-align:left">both halves &gt; 0, ≥ 60% of years positive</td><td class="wrap" style="text-align:left">López de Prado (2018)</td></tr>
+    <tr><td>R4 Few days</td><td class="wrap" style="text-align:left">What is left without the best 10 days?</td><td class="wrap" style="text-align:left">keeps half the Sharpe ratio</td><td class="wrap" style="text-align:left">Taleb (2007)</td></tr>
+    <tr><td>R5 Losses</td><td class="wrap" style="text-align:left">Are there rare large losses (negative skew)?</td><td class="wrap" style="text-align:left">skew ≥ −1 on invested days</td><td class="wrap" style="text-align:left">Lo (2002)</td></tr>
+    <tr><td>R6 Bets</td><td class="wrap" style="text-align:left">How many independent positions stand behind it?</td><td class="wrap" style="text-align:left">≥ 50</td><td class="wrap" style="text-align:left">López de Prado (2018)</td></tr>
+    <tr><td>R7 One year</td><td class="wrap" style="text-align:left">Does it rest on a single year?</td><td class="wrap" style="text-align:left">best year ≤ 50% of profit</td><td class="wrap" style="text-align:left">López de Prado (2018)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>3.2 The key formulas</h3>
+<h4>White's Reality Check with Hansen's recentring</h4>
+<p>Let \(d_{k,t}\) be the daily net return of strategy \(k\) among everything tried, with the system itself included, and
+  \(\hat\omega_k\) its standard deviation. The system's statistic and the bootstrap statistics are</p>
+$$T_{\mathrm{sys}}=\frac{\sqrt n\,\bar d_{\mathrm{sys}}}{\hat\omega_{\mathrm{sys}}},\qquad
+T^\ast_b=\max_k\frac{\sqrt n\,\big(\bar d^{\,\ast}_{k,b}-g(\bar d_k)\big)}{\hat\omega_k},\qquad
+g(x)=x\cdot\mathbb 1\Big\{x\ge-\hat\omega_k\sqrt{2\ln\ln n/n}\Big\},$$
+$$p=\frac{1+\#\{b:\ T^\ast_b\ge T_{\mathrm{sys}}\}}{B+1}.$$
+<p>The resamples \(\bar d^{\,\ast}\) come from a stationary bootstrap (mean block of 20 days, \(B=1{,}000\)) that draws the same days
+  for every strategy, so their correlations are kept. Hansen's recentring \(g\) stops clearly inferior strategies from inflating
+  the null. The p-value answers: <i>if nothing tried had any skill, how often would the best of it look at least as good as the
+  system?</i> In a kit project the universe is every configuration of the strategy's grid (their out-of-fold returns, <code>oof.pkl</code>);
+  anything else tried on the same data belongs in it too, and leaving it out makes the test more lenient.</p>
+<h4>Random timing</h4>
+<p>The whole position path is shifted in time by a random lag, keeping every position, its size, its length, the turnover and the
+  time in the market; only the dates change:</p>
+$$\mathrm{pos}^{(\tau)}_t=\mathrm{pos}_{(t-\tau)\bmod n},\qquad \tau\sim\mathcal U\{21,\dots,n-21\},\qquad
+p=\frac{1+\#\{\tau:\ \widehat{SR}^{(\tau)}\ge\widehat{SR}\}}{B+1}.$$
+<h4>The multiple-testing haircut</h4>
+$$t=\widehat{SR}\sqrt{T_{\mathrm{years}}},\qquad p_{\mathrm{adj}}=\min\!\big(1,\;N\cdot 2\,[1-\Phi(|t|)]\big),\qquad
+SR_{\mathrm{haircut}}=\frac{\Phi^{-1}(1-p_{\mathrm{adj}}/2)}{\sqrt{T_{\mathrm{years}}}}.$$
+<h4>Record length</h4>
+<p>With the per-period Sharpe ratio, the minimum track record length in observations, and with the annualised Sharpe ratio the
+  minimum backtest length in years for \(N\) trials, are</p>
+$$\mathrm{MinTRL}=1+\Big(1-\hat\gamma_3\,\widehat{SR}+\tfrac{\hat\gamma_4-1}{4}\,\widehat{SR}^2\Big)\Big(\frac{z_{0.95}}{\widehat{SR}-SR^\ast}\Big)^2,
+\qquad \mathrm{MinBTL}\approx\frac{2\ln N}{\widehat{SR}^{2}_{\mathrm{ann}}}.$$
+<h4>Autocorrelation, alpha and convexity</h4>
+$$\widehat{SR}_{\mathrm{ann}}=\eta(q)\,\widehat{SR}_{\mathrm{daily}},\qquad \eta(q)=\frac{q}{\sqrt{q+2\sum_{k=1}^{q-1}(q-k)\,\rho_k}},\qquad q=252,$$
+<p>with \(\rho_k\) estimated for \(k\le10\) on returns trimmed at their 1% and 99% quantiles, and set to zero beyond. Alpha and
+  convexity come from the regressions \(r_{p,t}=\alpha+\beta\,r_{m,t}+\varepsilon_t\) and
+  \(r_{p,t}=\alpha+\beta\,r_{m,t}+\gamma\,r_{m,t}^2+\varepsilon_t\), with Newey–West standard errors.</p>
+
+<h3>3.3 The verdict</h3>
+<p>Seven tests are <b>core</b>, because each can explain a result away on its own: plausibility, the Sharpe interval, the deflated
+  Sharpe ratio, the Reality Check, random timing, rebuilt returns and every point-in-time rebuild.</p>
+<ul>
+  <li><b>Not proven:</b> any core test fails. Luck, the market, the search or an error can explain the result.</li>
+  <li><b>Inconclusive:</b> no core failure, but another failure or at least three warnings.</li>
+  <li><b>Credible so far:</b> everything else. Even then, the next step is paper trading, never capital.</li>
+</ul>
+
+<h2 id="glossary">Glossary</h2>
+<dl class="defs">
+  <dt>Alpha</dt><dd>Return not explained by exposure to the market, measured as the intercept of a regression on market returns.</dd>
+  <dt>Augmented Dickey–Fuller (ADF) test</dt><dd>A statistical test of whether a series is stationary; used to choose the order of fractional differentiation (Dickey and Fuller, 1979).</dd>
+  <dt>Basis point (bp)</dt><dd>One hundredth of a percent, 0.01%.</dd>
+  <dt>Beta</dt><dd>Sensitivity to the market: 1 moves with the index, 0 ignores it.</dd>
+  <dt>Bootstrap</dt><dd>Estimating the uncertainty of a statistic by recomputing it on many resampled versions of the data. The stationary bootstrap resamples blocks of consecutive days of random length, which keeps calm and turbulent spells together.</dd>
+  <dt>CAGR</dt><dd>Compound annual growth rate: the constant yearly return that turns the starting capital into the final capital.</dd>
+  <dt>Combinatorial purged cross-validation (CPCV)</dt><dd>Cross-validation that builds many complete backtest paths instead of one (Section 2.3).</dd>
+  <dt>Cross-validation</dt><dd>Testing a model on data held out from its fitting, rotating which part is held out.</dd>
+  <dt>Deflated Sharpe ratio (DSR)</dt><dd>The probability that the Sharpe ratio beats the best of N trials with no skill (Section 2.5).</dd>
+  <dt>Drawdown</dt><dd>The fall from a previous peak; the maximum drawdown is the worst such fall.</dd>
+  <dt>Embargo</dt><dd>A short period after each test block that is also removed from training, against leakage through serial correlation.</dd>
+  <dt>Empirical null</dt><dd>The distribution of test statistics expected without any real effect, estimated from the bulk of the data rather than assumed (Efron, 2004).</dd>
+  <dt>Expected false picks</dt><dd>The number of pure-noise rules expected to look at least as good as a candidate; the factory keeps it below a small budget.</dd>
+  <dt>Fractional differentiation (FFD)</dt><dd>A transform between prices and returns that makes a series stationary while keeping most of its memory.</dd>
+  <dt>In sample / out of sample</dt><dd>Data used to choose or fit a rule, versus data it has never seen. Only out-of-sample results count as evidence.</dd>
+  <dt>Leverage</dt><dd>Holding positions larger than the capital; 2× means twice the capital.</dd>
+  <dt>Log return</dt><dd>The difference of log prices, \(\ln P_t-\ln P_{t-1}\); log returns add up over time.</dd>
+  <dt>Look-ahead bias</dt><dd>Using information in a backtest that was not available at the time of the trade.</dd>
+  <dt>Mean decrease in accuracy (MDA)</dt><dd>How much a model's predictions worsen when one input is shuffled; near zero means the input is not used.</dd>
+  <dt>Meta-labelling</dt><dd>A second model that decides whether to take the first model's trade and how large to make it.</dd>
+  <dt>MinBTL, MinTRL</dt><dd>Minimum backtest length for a number of trials, and minimum track record length for a Sharpe ratio to be significant.</dd>
+  <dt>Point-in-time rebuild</dt><dd>Re-running the whole pipeline with data cut at an earlier date and checking that every earlier position is unchanged.</dd>
+  <dt>Probabilistic Sharpe ratio (PSR)</dt><dd>The probability that the true Sharpe ratio is above a benchmark, given the record's length and shape.</dd>
+  <dt>Probability of backtest overfitting (PBO)</dt><dd>How often the best configuration in one half of the history ranks below the median in the other half (Section 2.4).</dd>
+  <dt>Purging</dt><dd>Removing from training every observation whose outcome overlaps the test period.</dd>
+  <dt>Random forest</dt><dd>A prediction model that averages many decision trees, each grown on a random sample of the data (Breiman, 2001).</dd>
+  <dt>Reality Check</dt><dd>A test of whether the best of many strategies beats what luck alone would produce, allowing for the search (White, 2000).</dd>
+  <dt>Sharpe ratio</dt><dd>Average return divided by its volatility, annualised: reward per unit of risk.</dd>
+  <dt>Stationarity</dt><dd>The property of a series whose statistical behaviour does not drift over time.</dd>
+  <dt>t-value</dt><dd>How many standard errors an average lies from zero; about 2 is the textbook bar, 3 or more when many rules were tried.</dd>
+  <dt>Triple barrier</dt><dd>Labelling a trade by whichever it hits first: a profit target, a stop-loss or a time limit.</dd>
+  <dt>Uniqueness</dt><dd>The share of a trade's life during which it is the only trade active; overlapping trades carry less information.</dd>
+  <dt>Volatility</dt><dd>The annualised standard deviation of returns.</dd>
+  <dt>Volatility targeting</dt><dd>Sizing positions so that expected volatility stays at a target, here 10% a year.</dd>
+  <dt>Retired ("dead") rule</dt><dd>A rule that failed two consecutive January selections; one failure only pauses it.</dd>
+  <dt>Walk-forward</dt><dd>Choose on the past, trade the next period, move forward and repeat.</dd>
+  <dt>Zig-zag (Merrill's filter)</dt><dd>The price reduced to turning points separated by moves of at least the filter size.</dd>
+</dl>
+
+<h2 id="refs">References</h2>
+<ol class="refs">
+  <li>Adams, R. P. and MacKay, D. J. C. (2007). Bayesian online changepoint detection. arXiv:0710.3742.</li>
+  <li>Ariel, R. A. (1990). High stock returns before holidays: existence and evidence on possible causes. <i>Journal of Finance</i> 45(5), 1611–1626.</li>
+  <li>Arnott, R., Harvey, C. R. and Markowitz, H. (2019). A backtesting protocol in the era of machine learning. <i>Journal of Financial Data Science</i> 1(1), 64–74.</li>
+  <li>Aronson, D. (2006). <i>Evidence-Based Technical Analysis.</i> Wiley.</li>
+  <li>Bailey, D. H., Borwein, J. M., López de Prado, M. and Zhu, Q. J. (2014). Pseudo-mathematics and financial charlatanism: the effects of backtest overfitting on out-of-sample performance. <i>Notices of the American Mathematical Society</i> 61(5), 458–471.</li>
+  <li>Bailey, D. H., Borwein, J. M., López de Prado, M. and Zhu, Q. J. (2017). The probability of backtest overfitting. <i>Journal of Computational Finance</i> 20(4), 39–69.</li>
+  <li>Bailey, D. H. and López de Prado, M. (2012). The Sharpe ratio efficient frontier. <i>Journal of Risk</i> 15(2), 3–44.</li>
+  <li>Bailey, D. H. and López de Prado, M. (2014). The deflated Sharpe ratio: correcting for selection bias, backtest overfitting and non-normality. <i>Journal of Portfolio Management</i> 40(5), 94–107.</li>
+  <li>Breiman, L. (2001). Random forests. <i>Machine Learning</i> 45(1), 5–32.</li>
+  <li>Dickey, D. A. and Fuller, W. A. (1979). Distribution of the estimators for autoregressive time series with a unit root. <i>Journal of the American Statistical Association</i> 74(366), 427–431.</li>
+  <li>Efron, B. (2004). Large-scale simultaneous hypothesis testing: the choice of a null hypothesis. <i>Journal of the American Statistical Association</i> 99(465), 96–104.</li>
+  <li>Hansen, P. R. (2005). A test for superior predictive ability. <i>Journal of Business &amp; Economic Statistics</i> 23(4), 365–380.</li>
+  <li>Harvey, C. R. and Liu, Y. (2015). Backtesting. <i>Journal of Portfolio Management</i> 42(1), 13–28.</li>
+  <li>Harvey, C. R., Liu, Y. and Zhu, H. (2016). … and the cross-section of expected returns. <i>Review of Financial Studies</i> 29(1), 5–68.</li>
+  <li>Hosking, J. R. M. (1981). Fractional differencing. <i>Biometrika</i> 68(1), 165–176.</li>
+  <li>Lakonishok, J. and Smidt, S. (1988). Are seasonal anomalies real? A ninety-year perspective. <i>Review of Financial Studies</i> 1(4), 403–425.</li>
+  <li>Ledoit, O. and Wolf, M. (2008). Robust performance hypothesis testing with the Sharpe ratio. <i>Journal of Empirical Finance</i> 15(5), 850–859.</li>
+  <li>Lo, A. W. (2002). The statistics of Sharpe ratios. <i>Financial Analysts Journal</i> 58(4), 36–52.</li>
+  <li>López de Prado, M. (2018). <i>Advances in Financial Machine Learning.</i> Wiley.</li>
+  <li>López de Prado, M. (2020). <i>Machine Learning for Asset Managers.</i> Cambridge University Press.</li>
+  <li>McLean, R. D. and Pontiff, J. (2016). Does academic research destroy stock return predictability? <i>Journal of Finance</i> 71(1), 5–32.</li>
+  <li>Merrill, A. A. (1977). <i>Filtered Waves: Basic Theory.</i> The Analysis Press.</li>
+  <li>Moreira, A. and Muir, T. (2017). Volatility-managed portfolios. <i>Journal of Finance</i> 72(4), 1611–1644.</li>
+  <li>Newey, W. K. and West, K. D. (1987). A simple, positive semi-definite, heteroskedasticity and autocorrelation consistent covariance matrix. <i>Econometrica</i> 55(3), 703–708.</li>
+  <li>Politis, D. N. and Romano, J. P. (1994). The stationary bootstrap. <i>Journal of the American Statistical Association</i> 89(428), 1303–1313.</li>
+  <li>Sharpe, W. F. (1964). Capital asset prices: a theory of market equilibrium under conditions of risk. <i>Journal of Finance</i> 19(3), 425–442.</li>
+  <li>Taleb, N. N. (2007). <i>The Black Swan.</i> Random House.</li>
+  <li>Treynor, J. and Mazuy, K. (1966). Can mutual funds outguess the market? <i>Harvard Business Review</i> 44(4), 131–136.</li>
+  <li>White, H. (2000). A reality check for data snooping. <i>Econometrica</i> 68(5), 1097–1126.</li>
+</ol>
+
+</article>
+</div>
+<footer class="site"><div class="inner"><img src="static/mark.svg" alt=""><span>AlgoMaschine · research engine · results are research, not investment advice</span></div></footer>
+<script>
+"use strict";
+(function () {
+  document.getElementById("theme").addEventListener("click", function () {
+    var n = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", n);
+    try { localStorage.setItem("am-theme", n); } catch (e) {}
+  });
+  document.getElementById("print").addEventListener("click", function () { window.print(); });
+  document.getElementById("toc-mobile-list").innerHTML = document.getElementById("toc-list").innerHTML;
+  var links = {};
+  document.querySelectorAll(".toc a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting && links[e.target.id]) {
+          document.querySelectorAll(".toc a.on").forEach(function (x) { x.classList.remove("on"); });
+          links[e.target.id].classList.add("on");
+        }
+      });
+    }, { rootMargin: "-70px 0px -75% 0px" });
+    document.querySelectorAll("article.paper h2[id], article.paper h3[id]").forEach(function (h) { io.observe(h); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[project]
+name = "__NAME__"
+title = "__NAME__ · walk-forward"
+system_name = "__NAME__"
+strategy_module = "strategy"          # strategy.py in this directory, class Strategy
+
+[data]                                # EODHD symbols: FX EURUSD.FOREX, index GSPC.INDX, ETF SPY.US, crypto BTC-USD.CC
+daily = ["GSPC.INDX"]
+intraday = []                         # 5m from 1m, chunked and cached; run `make qa` on them
+intraday_start = "2010-01-01"
+qa_reference = "SPY.US"               # lag-0 reference for the clock QA gate (needs its intraday too)
+
+[market]                              # the traded instrument (the engine's price and volume)
+symbol = "GSPC.INDX"
+field = "adjusted_close"
+start = "1950-01-01"
+
+[walkforward]
+first_year = 1990                     # first out-of-sample year (training = everything before it, expanding)
+k_folds = 5                           # purged k-fold
+embargo = 0.01
+cost = 0.0001                         # per unit of |delta position|: 2 bp per round trip
+vol_target = 0.10
+leverage_cap = 2.0
+meta = true                           # meta-labelling + bet sizing
+barrier_m = [1.0, 2.0]
+
+[review]
+t_check = "2000-01-01"
+null_first = 2005                     # the review's synthetic walk-forwards start here (faster)
+
+[report]
+notes = []                            # caveats that must travel with the results
+
+[audit]                               # make audit: the too-good-to-be-true audit (skill: backtest-audit)
+rebuild = ["2015-01-01"]              # point-in-time re-runs; every earlier position must be identical
+provenance = "__NAME__: where the idea came from, and whether it was known to work on this data"
+provenance_status = "warn"            # pass only if the idea was fixed before looking at this market's history

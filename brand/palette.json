@@ -1,0 +1,17 @@
+{
+  "brand": {"fuchsia": "#d946ef", "violet_black": "#0d0614", "white": "#ffffff",
+            "wordmark_font": "Montserrat 300, letter-spacing 0.09em, soft glow as in the logotype",
+            "rule": "the logotype (mark.svg + wordmark) is used exactly as designed, on violet-black bands (header, footer); the rest of the UI is calm: no glows"},
+  "ui": {
+    "light": {"page": "#f6f6f3", "surface": "#ffffff", "ink": "#15171c", "ink_2": "#434852", "muted": "#6a6f78", "ring": "#e3e3de", "accent": "#a22bb5"},
+    "dark":  {"page": "#0f1115", "surface": "#161920", "ink": "#e8eaee", "ink_2": "#b4b9c3", "muted": "#8a909b", "ring": "#262a33", "accent": "#d17ae0"},
+    "fonts": {"ui": "Inter", "long_form": "Source Serif 4", "code": "JetBrains Mono", "brand": "Montserrat"}
+  },
+  "series": {
+    "light": {"surface": "#ffffff", "s1": "#00928a", "s2": "#a8690a", "s3": "#a22bb5", "bench": "#5b6170"},
+    "dark":  {"surface": "#161920", "s1": "#1fa39c", "s2": "#bd7f17", "s3": "#c65ad6", "bench": "#9aa1ad"}
+  },
+  "diverging": {"light": ["#c8423f", "#efefeb", "#00928a"], "dark": ["#e0605c", "#272b34", "#1fa39c"]},
+  "status": {"light": {"good": "#1a7f37", "warning": "#8a5a00", "bad": "#b42318"}, "dark": {"good": "#57c878", "warning": "#e3b341", "bad": "#f47067"}},
+  "validation": "dataviz validate_palette.js --pairs all: light s1-s3 on #ffffff all checks pass (CVD dE 11.9); dark s1-s3 on #161920 all pass (CVD dE 9.0). The benchmark is a neutral reference line, thinner and labelled. Max 3 series per chart; more -> small multiples."
+}

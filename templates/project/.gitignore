@@ -1,0 +1,5 @@
+data/
+outputs/
+.amq/
+__pycache__/
+*.pyc
