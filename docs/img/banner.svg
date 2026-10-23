@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="AlgoMaschine Kit: walk-forward backtesting for quantitative trading">
 <style>
+:root{--ink:#f4f5f6;--gold:#e0b84a;--fux:#e56ff7;--eye:#1c0f26}
+.p{fill:#e56ff7;stroke:none} .pl{fill:none;stroke:#e56ff7;stroke-linecap:round;stroke-linejoin:round} .w{fill:none;stroke:#fff;stroke-linecap:round}
+.eye{fill:#1c0f26;stroke:#f4f5f6;stroke-width:6}
 .l{fill:none;stroke:#f4f5f6;stroke-linejoin:round;stroke-linecap:round}
 .f{fill:#f4f5f6;stroke:none} .g{fill:#d2b469;stroke:none} .gl{fill:none;stroke:#d2b469;stroke-linejoin:round;stroke-linecap:round}
 .eye{fill:#2a1038;stroke:#f4f5f6;stroke-width:6}
@@ -17,55 +20,61 @@
   <g class="l" stroke-width="17"><polygon points="500,50 890,275 890,725 500,950 110,725 110,275"/></g>
   <g class="l" stroke-width="9"><polygon points="500,80 860,290 860,710 500,920 140,710 140,290"/></g>
 
-  <!-- COMPASS: two tapered legs from the hinge, needle on the left, pencil on the right, arc bar -->
-  <g>
-    <path class="l" stroke-width="15" d="M486,640 L382,796 M514,640 L618,796"/>
-    <path class="gl" stroke-width="4" d="M488,664 L402,790 M512,664 L598,790" opacity=".9"/>
-    <!-- needle (left): a fine steel point -->
-    <path class="f" d="M372,790 L394,802 L372,836 Z"/>
-    <!-- pencil holder (right): a clamp and a golden lead -->
-    <path class="l" stroke-width="8" d="M602,774 L634,792"/>
-    <path class="g" d="M620,796 L640,784 L632,834 Z"/>
-    <!-- arc bar joining the legs -->
-    <path class="l" stroke-width="7" d="M424,744 Q500,708 576,744"/>
-    <circle class="g" cx="424" cy="744" r="8"/><circle class="g" cx="576" cy="744" r="8"/>
-    <!-- the circle the pencil draws -->
-    <path class="gl" stroke-width="9" stroke-dasharray="0 22" d="M418,852 L584,852"/>
-  </g>
+  <!-- tail: fluffy, curling up on the left, gold tip -->
+  <path class="l" stroke-width="12" d="M415,790 C290,815 205,740 235,620 C248,575 292,570 302,606 C296,665 335,715 410,730"/>
+  <path class="g" d="M235,620 C240,585 272,566 302,606 C282,606 258,612 235,620 Z"/>
+  <path class="l" stroke-width="6" d="M262,690 C280,712 310,722 340,724" opacity=".6"/>
 
-  <!-- NECK and chest ruff: leads into the hinge -->
-    <path class="l" stroke-width="7" d="M452,534 L476,566 L500,540 L524,566 L548,534"/><path class="l" stroke-width="7" d="M500,540 L500,584"/>
-  <!-- HINGE: ring and screw -->
-  <circle class="l" stroke-width="12" cx="500" cy="612" r="31"/>
-  <circle class="g" cx="500" cy="612" r="10"/>
+  <!-- body, sitting -->
+  <path class="l" stroke-width="12" d="M418,610 C372,690 375,770 425,800 L575,800 C625,770 628,690 582,610"/>
+  <path class="l" stroke-width="6" d="M470,640 L500,715 L530,640" opacity=".7"/>
+  <!-- left paw down -->
+  <path class="l" stroke-width="10" d="M455,720 L452,795"/>
+  <ellipse class="l" stroke-width="10" cx="452" cy="800" rx="34" ry="14"/>
+  <!-- right foot -->
+  <ellipse class="l" stroke-width="10" cx="560" cy="800" rx="34" ry="14"/>
 
-  <!-- FOX HEAD, scaled so the compass reads clearly -->
-  <g transform="translate(500 345) scale(.82) translate(-500 -345)">
-    <!-- ears -->
-    <path class="l" stroke-width="12" d="M340,305 L352,128 L452,246"/>
-    <path class="l" stroke-width="12" d="M660,305 L648,128 L548,246"/>
-    <path class="g" d="M358,262 L362,172 L424,244 Z"/>
-    <path class="g" d="M642,262 L638,172 L576,244 Z"/>
-    <!-- head: faceted, with cheek tufts -->
-    <path class="l" stroke-width="12" d="M340,305 L452,246 Q500,232 548,246 L660,305 L688,382 L716,428 L664,434 L640,484 L574,520 L500,556 L426,520 L360,484 L336,434 L284,428 L312,382 Z"/>
-    <!-- facets -->
-    <path class="t" stroke-width="5" d="M452,246 L500,318 L548,246 M500,318 L500,508 M340,305 L420,398 M660,305 L580,398"/>
-    <!-- muzzle -->
-    <path class="t" stroke-width="5" d="M426,520 L470,470 L500,500 L530,470 L574,520"/>
-    <!-- eyes: almond, upswept, with lashes -->
-    <path class="f" d="M384,398 Q424,376 468,412 Q424,430 384,398 Z"/>
-    <path class="f" d="M616,398 Q576,376 532,412 Q576,430 616,398 Z"/>
-    <circle class="g" cx="436" cy="404" r="12"/><circle class="g" cx="564" cy="404" r="12"/>
-    <circle fill="#fff" cx="441" cy="399" r="4.5"/><circle fill="#fff" cx="569" cy="399" r="4.5"/>
-    <path class="l" stroke-width="8" d="M384,398 L364,384 M392,390 L376,372 M616,398 L636,384 M608,390 L624,372"/>
-    <path class="l" stroke-width="8" d="M388,394 Q424,370 470,410 M612,394 Q576,370 530,410"/>
-    <!-- nose and a small smile -->
-    <path class="f" d="M480,520 L520,520 L500,546 Z"/>
-        <!-- blush -->
-    <ellipse class="r" cx="396" cy="450" rx="30" ry="13"/><ellipse class="r" cx="604" cy="450" rx="30" ry="13"/>
-    <!-- whiskers -->
-    <path class="gl" stroke-width="3.5" d="M330,470 L268,462 M334,494 L276,504 M670,470 L732,462 M666,494 L724,504" opacity=".85"/>
-  </g>
+  <!-- the ring the compass draws: vivid dots around the whole scene -->
+  <circle class="pl" stroke-width="13" stroke-dasharray="0 36" cx="500" cy="500" r="330"/>
+
+  <!-- COMPASS: bright gold legs, fuchsia hinge and arc bar, steel needle, pencil -->
+  <path class="pl" stroke-width="12" d="M730,388 L730,358"/><circle class="p" cx="730" cy="346" r="13"/>
+  <path d="M716,450 L738,452 L690,744 L664,738 Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M722,452 L744,450 L796,738 L770,744 Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="7" stroke-linejoin="round"/>
+  <path class="w" stroke-width="5" d="M720,470 L690,700 M742,470 L784,700" opacity=".85"/>
+  <path class="pl" stroke-width="10" d="M692,612 Q731,578 770,612"/>
+  <circle class="p" cx="692" cy="612" r="10"/><circle class="p" cx="770" cy="612" r="10"/>
+  <path class="f" d="M657,736 L686,744 L668,792 Z"/>
+  <path class="pl" stroke-width="12" d="M768,722 L800,730"/>
+  <path class="p" d="M771,742 L798,736 L788,790 Z"/>
+  <circle class="l" stroke-width="11" cx="731" cy="420" r="34"/>
+  <circle class="p" cx="731" cy="420" r="13"/>
+  <!-- the arm reaches up to the ring -->
+  <path class="l" stroke-width="11" d="M588,655 C626,640 668,560 696,452"/>
+  <circle class="l" stroke-width="10" cx="702" cy="452" r="17"/>
+
+  <!-- ears -->
+  <path class="l" stroke-width="12" d="M352,398 C340,330 335,290 330,248 C385,272 430,305 462,345"/>
+  <path class="l" stroke-width="12" d="M648,398 C660,330 665,290 670,248 C615,272 570,305 538,345"/>
+  <path class="g" d="M356,372 C350,330 346,300 346,282 C380,298 408,318 428,342 C400,350 376,360 356,372 Z"/>
+  <path class="g" d="M644,372 C650,330 654,300 654,282 C620,298 592,318 572,342 C600,350 624,360 644,372 Z"/>
+
+  <!-- head: round, with cheek tufts -->
+  <path class="l" stroke-width="12" d="M330,495 C322,400 402,340 500,340 C598,340 678,400 670,495 L700,520 L668,534 L688,562 C650,610 580,626 500,626 C420,626 350,610 312,562 L332,534 L300,520 Z"/>
+
+  <!-- eyes: left wide open and sparkling, right winking; lashes -->
+  <ellipse class="eye" cx="428" cy="485" rx="34" ry="44"/>
+  <circle fill="#fff" cx="440" cy="466" r="12"/><circle fill="#fff" cx="418" cy="506" r="6"/>
+  <path class="l" stroke-width="9" d="M395,452 L376,436 M394,472 L372,468"/>
+  <path class="l" stroke-width="11" d="M538,492 Q572,452 606,492"/>
+  <path class="l" stroke-width="9" d="M612,478 L630,462"/>
+  <!-- nose and mouth -->
+  <path class="f" d="M488,534 Q500,526 512,534 Q508,546 500,550 Q492,546 488,534 Z"/>
+  <path class="l" stroke-width="8" d="M500,552 L500,562 M500,562 Q486,578 470,566 M500,562 Q514,578 530,566"/>
+  <!-- blush -->
+  <ellipse class="b" cx="386" cy="552" rx="30" ry="15"/>
+  <ellipse class="b" cx="614" cy="552" rx="30" ry="15"/>
+
 </svg>
 <text x="470" y="150" fill="#f4f5f6" font-family="Georgia,'Times New Roman',serif" font-size="76" font-weight="600">AlgoMaschine Kit</text>
 <text x="472" y="198" fill="#d2b469" font-family="'Helvetica Neue',Arial,sans-serif" font-size="22" letter-spacing="6">BACKTESTING THAT TELLS THE TRUTH</text>

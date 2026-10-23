@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 530" width="1280" height="530" role="img" aria-label="What is inside the kit">
 <style>
+:root{--ink:#f4f5f6;--gold:#e0b84a;--fux:#e56ff7;--eye:#1c0f26}
+.p{fill:#e56ff7;stroke:none} .pl{fill:none;stroke:#e56ff7;stroke-linecap:round;stroke-linejoin:round} .w{fill:none;stroke:#fff;stroke-linecap:round}
+.eye{fill:#1c0f26;stroke:#f4f5f6;stroke-width:6}
 .l{fill:none;stroke:#f4f5f6;stroke-linejoin:round;stroke-linecap:round}
 .f{fill:#f4f5f6;stroke:none} .g{fill:#d2b469;stroke:none} .gl{fill:none;stroke:#d2b469;stroke-linejoin:round;stroke-linecap:round}
 .eye{fill:#2a1038;stroke:#f4f5f6;stroke-width:6}
